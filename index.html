@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>华为工龄计算器 · Soft UI</title>
+<style>
+  :root {
+    --soft-bg: #E8EBF2;
+    --soft-bg-deep: #DDE1EA;
+    --shadow-dark: #C3C9D8;
+    --shadow-light: #FFFFFF;
+    --huawei-red: #D31A24;
+    --huawei-red-deep: #B00E18;
+    --ink: #2B3242;
+    --muted: #7C8598;
+    --soft-radius: 24px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 56px 20px 72px;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: radial-gradient(1100px 620px at 18% -10%, #F4F6FB 0%, transparent 60%),
+                radial-gradient(900px 520px at 100% 100%, #E2E6F0 0%, transparent 65%),
+                var(--soft-bg);
+    background-attachment: fixed;
+  }
+
+  /* ---------- 顶部品牌 ---------- */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 34px;
+  }
+
+  .brand-mark {
+    width: 52px;
+    height: 52px;
+    border-radius: 17px;
+    display: grid;
+    place-items: center;
+    background: var(--soft-bg);
+    box-shadow: 7px 7px 16px var(--shadow-dark), -7px -7px 16px var(--shadow-light);
+  }
+
+  .brand-mark svg {
+    width: 24px;
+    height: 24px;
+    stroke: var(--huawei-red);
+  }
+
+  .brand-text h1 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: .4px;
+  }
+
+  .brand-text p {
+    margin: 3px 0 0;
+    font-size: 11.5px;
+    letter-spacing: 2.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---------- 卡片 ---------- */
+  .card {
+    width: 100%;
+    max-width: 600px;
+    padding: 40px 38px 34px;
+    border-radius: 34px;
+    background: var(--soft-bg);
+    box-shadow:
+      22px 22px 48px var(--shadow-dark),
+      -22px -22px 48px var(--shadow-light);
+  }
+
+  .card-title {
+    margin: 0 0 10px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .3px;
+  }
+
+  .card-sub {
+    margin: 0 0 28px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--muted);
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #5B6478;
+    margin-bottom: 12px;
+  }
+
+  .field {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: stretch;
+  }
+
+  /* ---------- 凹槽输入框 ---------- */
+  input[type="date"] {
+    flex: 1 1 220px;
+    min-width: 0;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    padding: 15px 18px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--soft-bg);
+    outline: none;
+    box-shadow:
+      inset 5px 5px 10px var(--shadow-dark),
+      inset -5px -5px 10px var(--shadow-light);
+    transition: box-shadow .22s ease, color .2s ease;
+  }
+
+  input[type="date"]:focus {
+    box-shadow:
+      inset 4px 4px 9px #C0C6D6,
+      inset -4px -4px 9px #FFFFFF,
+      0 0 0 3px rgba(211, 26, 36, .12);
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: .55;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: .9; }
+
+  /* ---------- 凸起按钮 ---------- */
+  button {
+    font: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    color: #fff;
+    border: 0;
+    border-radius: 16px;
+    padding: 15px 30px;
+    cursor: pointer;
+    background: linear-gradient(145deg, #E5232E, var(--huawei-red-deep));
+    box-shadow:
+      8px 8px 18px rgba(176, 14, 24, .32),
+      -4px -4px 12px var(--shadow-light);
+    transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+  }
+
+  button:hover {
+    filter: brightness(1.04);
+    box-shadow:
+      10px 10px 22px rgba(176, 14, 24, .38),
+      -4px -4px 12px var(--shadow-light);
+  }
+
+  button:active {
+    transform: translateY(1px);
+    box-shadow:
+      inset 4px 4px 9px rgba(120, 8, 16, .45),
+      inset -3px -3px 8px rgba(255, 255, 255, .28);
+  }
+
+  /* ---------- 错误提示 ---------- */
+  .error {
+    display: none;
+    margin-top: 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--huawei-red-deep);
+    padding: 13px 17px;
+    border-radius: 14px;
+    background: var(--soft-bg);
+    box-shadow:
+      inset 3px 3px 7px var(--shadow-dark),
+      inset -3px -3px 7px var(--shadow-light);
+  }
+
+  .error.show { display: block; }
+
+  /* ---------- 结果 ---------- */
+  .result {
+    display: none;
+    margin-top: 32px;
+  }
+
+  .result.show { display: block; animation: softRise .45s cubic-bezier(.22, .9, .32, 1) both; }
+
+  @keyframes softRise {
+    from { opacity: 0; transform: translateY(14px) scale(.985); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .result-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .result-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .badge {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #6B7488;
+    padding: 6px 12px;
+    border-radius: 10px;
+    background: var(--soft-bg);
+    box-shadow: 3px 3px 7px var(--shadow-dark), -3px -3px 7px var(--shadow-light);
+    white-space: nowrap;
+  }
+
+  /* 凹槽展示区 */
+  .days-panel {
+    border-radius: 26px;
+    padding: 28px 26px 24px;
+    text-align: center;
+    background: var(--soft-bg);
+    box-shadow:
+      inset 8px 8px 18px var(--shadow-dark),
+      inset -8px -8px 18px var(--shadow-light);
+  }
+
+  .days {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 10px;
+    line-height: 1;
+  }
+
+  .days .num {
+    font-size: clamp(56px, 15vw, 86px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(150deg, #EB4048 0%, #B00E18 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, .35);
+    filter: drop-shadow(0 8px 14px rgba(176, 14, 24, .18));
+  }
+
+  .days .unit {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--huawei-red-deep);
+  }
+
+  .days-note {
+    margin-top: 12px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .5px;
+  }
+
+  /* 三块小卡片：凸起 */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .stat {
+    text-align: center;
+    padding: 18px 8px 15px;
+    border-radius: 20px;
+    background: var(--soft-bg);
+    box-shadow: 8px 8px 18px var(--shadow-dark), -8px -8px 18px var(--shadow-light);
+    transition: box-shadow .25s ease, transform .25s ease;
+  }
+
+  .stat:hover {
+    transform: translateY(-2px);
+    box-shadow: 11px 11px 24px var(--shadow-dark), -10px -10px 22px var(--shadow-light);
+  }
+
+  .stat b {
+    display: block;
+    font-size: 24px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+
+  .stat span {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    letter-spacing: 1.4px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .meta {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 16px;
+    background: var(--soft-bg);
+    box-shadow:
+      inset 3px 3px 8px var(--shadow-dark),
+      inset -3px -3px 8px var(--shadow-light);
+    font-size: 12.5px;
+    line-height: 2;
+    color: var(--muted);
+  }
+
+  .meta strong {
+    color: #414A5E;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  footer {
+    margin-top: 32px;
+    font-size: 11.5px;
+    letter-spacing: .8px;
+    color: #9AA3B4;
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    body { padding: 40px 16px 56px; }
+    .card { padding: 30px 22px 26px; border-radius: 28px; }
+    .days-panel { padding: 24px 16px 20px; }
+    .grid { gap: 10px; }
+    .stat { padding: 15px 6px 13px; border-radius: 16px; }
+    .stat b { font-size: 20px; }
+    .brand { gap: 12px; }
+    .brand-mark { width: 46px; height: 46px; border-radius: 15px; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <h1>华为工龄计算器</h1>
+      <p>Soft UI Edition</p>
+    </div>
+  </header>
+
+  <main class="card">
+    <h2 class="card-title">你加入华为多少天了？</h2>
+    <p class="card-sub">选择入职日期，计算截至今天在华为工作的总天数，入职当天计为第 1 天。</p>
+
+    <label for="joinDate">加入华为的日期</label>
+    <div class="field">
+      <input type="date" id="joinDate" aria-label="加入华为的日期">
+      <button id="calcBtn" type="button">开始计算</button>
+    </div>
+
+    <div class="error" id="error" role="alert"></div>
+
+    <section class="result" id="result" aria-live="polite">
+      <div class="result-head">
+        <span class="result-label">在华为工作</span>
+        <span class="badge" id="tenureBadge">—</span>
+      </div>
+
+      <div class="days-panel">
+        <div class="days">
+          <span class="num" id="totalDays">0</span>
+          <span class="unit">天</span>
+        </div>
+        <div class="days-note">含入职当天 · 数据仅在本机计算</div>
+      </div>
+
+      <div class="grid">
+        <div class="stat"><b id="years">0</b><span>年</span></div>
+        <div class="stat"><b id="months">0</b><span>个月</span></div>
+        <div class="stat"><b id="daysRest">0</b><span>天</span></div>
+      </div>
+
+      <div class="meta">
+        <div>入职日期：<strong id="joinEcho">—</strong></div>
+        <div>统计日期：<strong id="todayEcho">—</strong></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>Soft UI 风格试做版 · 仅供个人参考</footer>
+
+<script>
+(function () {
+  var input = document.getElementById('joinDate');
+  var btn = document.getElementById('calcBtn');
+  var errorEl = document.getElementById('error');
+  var resultEl = document.getElementById('result');
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function fmt(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function midnight(d) { return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+
+  var today = midnight(new Date());
+  input.max = fmt(today);
+
+  function showError(msg) {
+    errorEl.textContent = msg;
+    errorEl.classList.add('show');
+    resultEl.classList.remove('show');
+  }
+  function clearError() { errorEl.classList.remove('show'); }
+
+  function calendarDiff(from, to) {
+    var y = to.getFullYear() - from.getFullYear();
+    var m = to.getMonth() - from.getMonth();
+    var d = to.getDate() - from.getDate();
+    if (d < 0) {
+      m -= 1;
+      d += new Date(to.getFullYear(), to.getMonth(), 0).getDate();
+    }
+    if (m < 0) { y -= 1; m += 12; }
+    return { y: y, m: m, d: d, totalMonths: y * 12 + m + (d > 0 ? 0.5 : 0) };
+  }
+
+  function badgeText(total) {
+    var years = total / 365;
+    if (years < 1) return '新伙伴';
+    if (years < 3) return '成长中';
+    if (years < 5) return '稳步前行';
+    if (years < 10) return '中坚力量';
+    if (years < 20) return '资深奋斗者';
+    return '功勋元老';
+  }
+
+  function calc() {
+    var raw = input.value;
+    if (!raw) { showError('请先选择加入华为的日期。'); return; }
+
+    var p = raw.split('-');
+    var join = midnight(new Date(+p[0], +p[1] - 1, +p[2]));
+    if (isNaN(join.getTime())) { showError('日期格式无效，请重新选择。'); return; }
+    if (join > today) { showError('入职日期不能晚于今天。'); return; }
+
+    clearError();
+
+    var DAY = 86400000;
+    var utcJoin = Date.UTC(join.getFullYear(), join.getMonth(), join.getDate());
+    var utcToday = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+    var total = Math.floor((utcToday - utcJoin) / DAY) + 1;
+
+    var diff = calendarDiff(join, today);
+
+    document.getElementById('totalDays').textContent = total.toLocaleString('zh-CN');
+    document.getElementById('years').textContent = diff.y;
+    document.getElementById('months').textContent = diff.m;
+    document.getElementById('daysRest').textContent = diff.d;
+    document.getElementById('joinEcho').textContent = fmt(join);
+    document.getElementById('todayEcho').textContent = fmt(today);
+    document.getElementById('tenureBadge').textContent = badgeText(total);
+
+    resultEl.classList.remove('show');
+    void resultEl.offsetWidth;
+    resultEl.classList.add('show');
+  }
+
+  btn.addEventListener('click', calc);
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') calc(); });
+  input.addEventListener('change', function () { if (input.value) calc(); });
+})();
+</script>
+</body>
+</html>
